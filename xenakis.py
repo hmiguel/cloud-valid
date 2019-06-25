@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import hmac, hashlib
 import time, bson
 from collections import OrderedDict
@@ -9,7 +11,7 @@ def get_secret():
 def get_info():
     return {
         "bid" : 728,
-        "dtm" : int(time.time()),   
+        "dtm" : int(time.time()),
         "lid" : 12,
         "lat" : 37.4224764,
         "lng" : -122.0842499,
@@ -27,15 +29,16 @@ def pack(data):
 
 def unpack(data):
     tmp = bson.loads(data)
+    tmp = OrderedDict(sorted(tmp.items()))
     mac = tmp.pop("mac")
     bdata = bson.dumps(tmp)
-    h = hmac.new(SECRET_KEY, bdata, hashlib.sha256 ).hexdigest()
+    h = hmac.new(get_secret(), bdata, hashlib.sha256 ).hexdigest()
     if(h != mac): raise Exception("Security Error!")
     return bson.loads(data)
 
 if __name__ == "__main__":
-    info = get_validation_info()
-    a = pack_data(info)
-    b = unpack_data(a)
-    print(a)
-    print(b)
+    info = get_info()
+    a = pack(info)
+    b = unpack(a)
+    print("Binary:", a)
+    print("Plain:",b)
