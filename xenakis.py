@@ -4,6 +4,9 @@ import hmac, hashlib
 import time, bson
 from collections import OrderedDict
 
+class InvalidSignature(Exception):
+    pass
+
 def get_secret():
     # get some secret key, stored somewhere
     return b'932847-9304-049234-32024-320948'
@@ -33,7 +36,7 @@ def unpack(data):
     mac = tmp.pop("mac")
     bdata = bson.dumps(tmp)
     h = hmac.new(get_secret(), bdata, hashlib.sha256 ).hexdigest()
-    if(h != mac): raise Exception("Security Error!")
+    if(h != mac): raise InvalidSignature("Signature did not match.")
     return bson.loads(data)
 
 if __name__ == "__main__":
