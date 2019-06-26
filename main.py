@@ -11,14 +11,16 @@ gpio.setup(gpo_pin, gpio.IN, pull_up_down=gpio.PUD_UP) # start at '1', pulled do
 
 def write_tag(data):
     write_ok = False
+    print(data)
     # write tag here => todo
+    with open('tag.bson', 'wb') as tag: tag.write(data)    # write data to a binary file
     return write_ok == True
 
 def gpo_callback(channel):
     print ("ST25DV GPO detected on GPIO {pin}".format(pin = gpo_pin))
     info = xenakis.pack(xenakis.get_info())
     if (write_tag(info)):
-    	print("Tag Updated!")
+        print("Tag Updated!")
 
 gpio.add_event_detect(gpo_pin, gpio.FALLING, callback=gpo_callback, bouncetime=200)
 
@@ -30,3 +32,5 @@ except KeyboardInterrupt:
     print ("\nExiting...")
 finally:
     gpio.cleanup()           # clean up GPIO on normal exit
+
+gpo_callback(None)
