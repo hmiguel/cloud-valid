@@ -17,7 +17,7 @@ def write_tag(data):
     return write_ok == True
 
 def gpo_callback(channel):
-    print ("ST25DV GPO detected on GPIO {pin}".format(pin = gpo_pin))
+    print ("NFC TAG GPO detected on GPIO {pin}".format(pin = gpo_pin))
     info = xenakis.pack(xenakis.get_info())
     if (write_tag(info)):
         print("Tag Updated!")
